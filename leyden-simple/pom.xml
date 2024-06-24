@@ -25,7 +25,6 @@
                     <target>${java.version}</target>
                     <source>${java.version}</source>
                     <compilerArgs>
-                        <compilerArg>--enable-preview</compilerArg>
                     </compilerArgs>
                 </configuration>
             </plugin>
