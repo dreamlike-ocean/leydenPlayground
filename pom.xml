@@ -16,6 +16,7 @@
     <modules>
         <module>leyden-simple</module>
         <module>leyden-spring</module>
+        <module>leyden-quarkus</module>
     </modules>
 
 
