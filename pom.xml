@@ -17,7 +17,17 @@
         <module>leyden-simple</module>
         <module>leyden-spring</module>
         <module>leyden-quarkus</module>
+        <module>leyden-compile-enhance</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.dreamlike</groupId>
+                <artifactId>leyden-compile-enhance</artifactId>
+                <version>0.0.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
