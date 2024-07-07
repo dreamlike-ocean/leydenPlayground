@@ -8,6 +8,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.classfile.AccessFlags;
 import java.lang.classfile.ClassFile;
 import java.lang.classfile.constantpool.ConstantDynamicEntry;
@@ -56,6 +57,7 @@ public class LeydenCompileProcessor extends AbstractProcessor {
         hasGenerated = true;
         try {
             generateCondy();
+            generateProfile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -94,14 +96,13 @@ public class LeydenCompileProcessor extends AbstractProcessor {
                     MethodTypeDesc.of(ClassDesc.of(Object.class.getName())),
                     AccessFlags.ofMethod(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC).flagsMask(),
                     it -> {
+
                         it.invokeDynamicInstruction(
                                 DynamicCallSiteDesc.of(
-                                        MethodHandleDesc.ofMethod(
-                                                DirectMethodHandleDesc.Kind.STATIC,
+                                        ConstantDescs.ofCallsiteBootstrap(
                                                 ClassDesc.of("io.github.dreamlike.DynamicEntryLeydenCase"),
                                                 "indyFactory",
-                                                MethodType.methodType(ConstantCallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class, Object[].class)
-                                                        .describeConstable().get()
+                                                ConstantCallSite.class.describeConstable().get()
                                         ),
                                         "get",
                                         MethodType.methodType(Object.class).describeConstable().get()
@@ -120,6 +121,24 @@ public class LeydenCompileProcessor extends AbstractProcessor {
             ouputStream.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void generateProfile() throws IOException {
+        boolean enableGroovy = Boolean.parseBoolean(env.getOptions().getOrDefault("enableGroovy", "false"));
+        String template = """
+                package io.github.dreamlike;
+                
+                public class Profile {
+                    public static final boolean enableGroovy = %s;
+                }
+                
+                """;
+        String content = String.format(template, enableGroovy ? "true" : "false");
+
+        try (OutputStream outputStream = env.getFiler().createSourceFile("Profile").openOutputStream()) {
+            outputStream.write(content.getBytes());
+            outputStream.flush();
         }
     }
 }

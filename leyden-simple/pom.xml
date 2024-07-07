@@ -15,9 +15,16 @@
         <java.version>22</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>io.github.dreamlike.Main</main.class>
+        <enable.groovy>true</enable.groovy>
     </properties>
     <profiles>
+
+
+
         <profile>
+            <properties>
+                <enable.groovy>false</enable.groovy>
+            </properties>
             <id>native-release</id>
             <build>
                 <plugins>
@@ -55,40 +62,9 @@
 
         <profile>
             <id>native-debug</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.graalvm.buildtools</groupId>
-                        <artifactId>native-maven-plugin</artifactId>
-                        <version>0.9.28</version>
-                        <extensions>true</extensions>
-                        <executions>
-                            <execution>
-                                <id>build-native</id>
-                                <goals>
-                                    <goal>compile-no-fork</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <buildArgs>
-                                <buildArg>--pgo-instrument</buildArg>
-                                <buildArg>--enable-native-access=ALL-UNNAMED</buildArg>
-                                <buildArg>--no-fallback</buildArg>
-                                <buildArg>--enable-preview</buildArg>
-                                <buildArg>-Ob</buildArg>
-                                <buildArg>-g</buildArg>
-                            </buildArgs>
-                            <skipNativeTests>true</skipNativeTests>
-                            <mainClass>${main.class}</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>native-static</id>
+            <properties>
+                <enable.groovy>false</enable.groovy>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -110,12 +86,8 @@
                                 <buildArg>--enable-native-access=ALL-UNNAMED</buildArg>
                                 <buildArg>--no-fallback</buildArg>
                                 <buildArg>--enable-preview</buildArg>
-                                <buildArg>--features=${graal.feature}</buildArg>
                                 <buildArg>-Ob</buildArg>
-                                <buildArg>-H:+ForeignAPISupport</buildArg>
                                 <buildArg>-g</buildArg>
-                                <buildArg>--static</buildArg>
-                                <buildArg>--libc=musl</buildArg>
                             </buildArgs>
                             <skipNativeTests>true</skipNativeTests>
                             <mainClass>${main.class}</mainClass>
@@ -128,6 +100,14 @@
 
     </profiles>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.groovy/groovy -->
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.22</version>
+        </dependency>
+
+
         <dependency>
             <groupId>io.github.dreamlike</groupId>
             <artifactId>leyden-compile-enhance</artifactId>
@@ -144,6 +124,7 @@
                     <source>${java.version}</source>
                     <compilerArgs>
                         <arg>--enable-preview</arg>
+                        <compilerArg>-AenableGroovy=${enable.groovy}</compilerArg>
                     </compilerArgs>
                     <annotationProcessors>
                         <annotationProcessor>io.github.dreamlike.LeydenCompileProcessor</annotationProcessor>

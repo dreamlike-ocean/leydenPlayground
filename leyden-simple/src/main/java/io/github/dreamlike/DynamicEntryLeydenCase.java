@@ -16,7 +16,7 @@ public class DynamicEntryLeydenCase implements LeydenCase {
     private static final String INDY_MTD = "indyInvoke";
 
 
-    public static ConstantCallSite indyFactory(MethodHandles.Lookup lookup, String name, MethodType type, Object... args) throws NoSuchFieldException, IllegalAccessException {
+    public static ConstantCallSite indyFactory(MethodHandles.Lookup lookup, String name, MethodType type) throws NoSuchFieldException, IllegalAccessException {
         var leibnizCase = new LeibnizCase();
         for (int i = 0; i < 100_000; i++) {
             leibnizCase.singeCal();

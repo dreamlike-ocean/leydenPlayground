@@ -21,7 +21,7 @@ public class Main {
         new JdkProxyLeydenCasae().timerRun();
         new JdkCaptureProxyLeydenCase().timerRun();
         new ALotLambdaLeydenCase().timerRun();
-
+        new GroovyLeydenCase().timerRun();
     }
 
 }

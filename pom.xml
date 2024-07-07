@@ -19,7 +19,14 @@
         <module>leyden-quarkus</module>
         <module>leyden-compile-enhance</module>
     </modules>
-
+    <profiles>
+        <profile>
+            <id>leyden</id>
+            <properties>
+                <java.version>24</java.version>
+            </properties>
+        </profile>
+    </profiles>
     <dependencyManagement>
         <dependencies>
             <dependency>
