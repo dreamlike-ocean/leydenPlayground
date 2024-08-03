@@ -18,9 +18,6 @@
         <enable.groovy>true</enable.groovy>
     </properties>
     <profiles>
-
-
-
         <profile>
             <properties>
                 <enable.groovy>false</enable.groovy>
@@ -123,6 +120,7 @@
                     <target>${java.version}</target>
                     <source>${java.version}</source>
                     <compilerArgs>
+                        <compilerArg>-Asimple.enable=true</compilerArg>
                         <arg>--enable-preview</arg>
                         <compilerArg>-AenableGroovy=${enable.groovy}</compilerArg>
                     </compilerArgs>

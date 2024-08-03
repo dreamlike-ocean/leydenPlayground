@@ -40,6 +40,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.dreamlike</groupId>
+            <artifactId>leyden-compile-enhance</artifactId>
+           <scope>provided</scope>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.graalvm.sdk/nativeimage -->
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
@@ -116,15 +121,23 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler-plugin.version}</version>
                 <configuration>
+                    <target>${java.version}</target>
+                    <source>${java.version}</source>
                     <compilerArgs>
+                        <compilerArg>--enable-preview</compilerArg>
+                        <compilerArg>-Aquarkus.count=10000</compilerArg>
+                        <compilerArg>-AenableUnRemovable=false</compilerArg>
                         <arg>-parameters</arg>
-<!--                        <arg>&#45;&#45;enable-preview</arg>-->
                     </compilerArgs>
+                    <annotationProcessors>
+                        <annotationProcessor>io.github.dreamlike.LeydenCompileProcessor</annotationProcessor>
+                    </annotationProcessors>
                 </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
@@ -217,4 +230,6 @@
             </properties>
         </profile>
     </profiles>
+
+
 </project>

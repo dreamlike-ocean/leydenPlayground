@@ -1,6 +1,0 @@
-package io.github.dreamlike.generated;
-
- @org.springframework.stereotype.Service
-    public class Service8111 implements io.github.dreamlike.BaseService{
-
-    }

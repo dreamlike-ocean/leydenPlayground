@@ -1,23 +1,27 @@
 package io.github.dreamlike;
-
-import io.github.dreamlike.generated.Service9999;
-import org.springframework.boot.SpringApplication;
+import io.github.dreamlike.generated.Service0;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @SpringBootApplication()
-public class LeydenSpringMain {
+@EnableGenerate
+public class LeydenSpringMain implements CommandLineRunner {
+    @Autowired
+    private Service0 service0;
     public static void main(String[] args) {
-//        ConfigurableApplicationContext context = SpringApplication.run(LeydenSpringMain.class, args);
-//        context.getBean(Service9999.class).run();
         new SpringApplicationBuilder(LeydenSpringMain.class)
                 .web(WebApplicationType.NONE)
-                .run(args)
-                .getBean(Service9999.class).run();
+                .run(args);
     }
 
 
+    @Override
+    public void run(String... args) throws Exception {
+        service0.run();
+    }
 }
