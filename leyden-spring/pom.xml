@@ -79,7 +79,7 @@
                     <source>${java.version}</source>
                     <compilerArgs>
                         <compilerArg>--enable-preview</compilerArg>
-                        <compilerArg>-Aspring.count=10</compilerArg>
+                        <compilerArg>-Aspring.count=5000</compilerArg>
                     </compilerArgs>
                     <annotationProcessors>
                         <annotationProcessor>io.github.dreamlike.LeydenCompileProcessor</annotationProcessor>
