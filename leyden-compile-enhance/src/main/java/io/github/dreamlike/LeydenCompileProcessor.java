@@ -1,23 +1,23 @@
 package io.github.dreamlike;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.classfile.AccessFlags;
 import java.lang.classfile.ClassFile;
-import java.lang.classfile.constantpool.ConstantDynamicEntry;
-import java.lang.classfile.constantpool.ConstantPoolBuilder;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.ConstantDescs;
-import java.lang.constant.DirectMethodHandleDesc;
 import java.lang.constant.DynamicCallSiteDesc;
 import java.lang.constant.DynamicConstantDesc;
-import java.lang.constant.MethodHandleDesc;
 import java.lang.constant.MethodTypeDesc;
 import java.lang.invoke.ConstantCallSite;
-import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessFlag;
 import java.util.Set;
@@ -29,7 +29,7 @@ import static java.lang.constant.ConstantDescs.ofConstantBootstrap;
 
 @SupportedAnnotationTypes("io.github.dreamlike.EnableGenerate")
 @SupportedSourceVersion(SourceVersion.RELEASE_22)
-@SupportedOptions({"quarkus.count", "simple.enable","enableGroovy", "spring.count"})
+@SupportedOptions({"quarkus.count", "simple.enable", "enableGroovy", "spring.count"})
 public class LeydenCompileProcessor extends AbstractProcessor {
     private static final String Dynamic_Test_Case_Class_name = "DynamicEntryLeydenCaseTestCase";
 
@@ -79,7 +79,7 @@ public class LeydenCompileProcessor extends AbstractProcessor {
 
     private void generateQuarkusBean(int count) {
         boolean b = Boolean.parseBoolean(this.env.getOptions().getOrDefault("enableUnRemovable", "false"));
-        String unRemove = b ? "@Unremovable": "";
+        String unRemove = b ? "@Unremovable" : "";
         String beanTemplate = """
                 package io.github.dreamlike.beans.generated;
                     import io.github.dreamlike.beans.Enhance;
@@ -88,13 +88,13 @@ public class LeydenCompileProcessor extends AbstractProcessor {
                    @Singleton
                    %s
                    public class Service%d {
-                    
+                
                        @Enhance
                        public void run() {
-                      
+                
                        }
                    }
-                 
+                
                 """;
         for (int i = 0; i < count; i++) {
             try (OutputStream outputStream = env.getFiler().createSourceFile(String.format("io.github.dreamlike.beans.generated.Service%d", i)).openOutputStream()) {
@@ -110,12 +110,12 @@ public class LeydenCompileProcessor extends AbstractProcessor {
     private void generateSpringBean(int count) {
         String beanTemplate = """
                 package io.github.dreamlike.generated;
-                 
+                
                  @org.springframework.stereotype.Service
                  public class Service%d implements io.github.dreamlike.BaseService {
-                 
+                
                  }
-                 
+                
                 """;
         for (int i = 0; i < count; i++) {
             try (OutputStream outputStream = env.getFiler().createSourceFile(String.format("io.github.dreamlike.generated.Service%d", i)).openOutputStream()) {
@@ -133,7 +133,8 @@ public class LeydenCompileProcessor extends AbstractProcessor {
         ClassFile classFile = ClassFile.of();
         String className = Dynamic_Test_Case_Class_name;
         byte[] classByteCode = classFile.build(ClassDesc.of(className), cb -> {
-            cb.withMethodBody(INIT_NAME, MTD_void, AccessFlags.ofMethod(AccessFlag.PUBLIC).flagsMask(), it -> {
+
+            cb.withMethodBody(INIT_NAME, MTD_void, AccessFlag.PUBLIC.mask(), it -> {
                 it.aload(0);
                 it.invokespecial(CD_Object, INIT_NAME, MTD_void);
                 it.return_();
@@ -142,15 +143,16 @@ public class LeydenCompileProcessor extends AbstractProcessor {
             cb.withMethodBody(
                     Condy_Method_Name,
                     MethodTypeDesc.of(ClassDesc.of(Object.class.getName())),
-                    AccessFlags.ofMethod(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC).flagsMask(),
+                    AccessFlag.PUBLIC.mask() | AccessFlag.SYNTHETIC.mask(),
                     it -> {
-                        ConstantPoolBuilder poolBuilder = it.constantPool();
-                        ConstantDynamicEntry constantDynamicEntry = poolBuilder.constantDynamicEntry(DynamicConstantDesc.of(
-                                ofConstantBootstrap(
-                                        ClassDesc.of("io.github.dreamlike.DynamicEntryLeydenCase")
-                                        , "condyFactory", Object.class.describeConstable().get())
-                        ));
-                        it.constantInstruction(constantDynamicEntry.constantValue());
+
+                        it.loadConstant(
+                                DynamicConstantDesc.of(
+                                        ofConstantBootstrap(
+                                                ClassDesc.of("io.github.dreamlike.DynamicEntryLeydenCase")
+                                                , "condyFactory", Object.class.describeConstable().get())
+                                )
+                        );
                         it.areturn();
                     }
             );
@@ -158,10 +160,10 @@ public class LeydenCompileProcessor extends AbstractProcessor {
             cb.withMethodBody(
                     INDY_MTD,
                     MethodTypeDesc.of(ClassDesc.of(Object.class.getName())),
-                    AccessFlags.ofMethod(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC).flagsMask(),
+                    AccessFlag.PUBLIC.mask() | AccessFlag.SYNTHETIC.mask(),
                     it -> {
 
-                        it.invokeDynamicInstruction(
+                        it.invokedynamic(
                                 DynamicCallSiteDesc.of(
                                         ConstantDescs.ofCallsiteBootstrap(
                                                 ClassDesc.of("io.github.dreamlike.DynamicEntryLeydenCase"),
@@ -192,11 +194,11 @@ public class LeydenCompileProcessor extends AbstractProcessor {
         boolean enableGroovy = Boolean.parseBoolean(env.getOptions().getOrDefault("enableGroovy", "false"));
         String template = """
                 package io.github.dreamlike;
-                                
+                
                 public class Profile {
                     public static final boolean enableGroovy = %s;
                 }
-                                
+                
                 """;
         String content = String.format(template, enableGroovy ? "true" : "false");
 

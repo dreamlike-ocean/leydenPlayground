@@ -5,11 +5,8 @@ COPYRIGHT
 https://github.com/Glavo/leibniz-benchmark/blob/main/src/leibniz2.java
  */
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
 
 public class LeibnizCase implements LeydenCase {
     @Override
