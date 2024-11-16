@@ -1,8 +1,13 @@
 package io.github.dreamlike;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public interface BaseService {
+     static final Logger log = LoggerFactory.getLogger(BaseService.class);
+
 
     default void run() {
-        System.out.println("Hello world!");
+        log.info("Hello world!");
     }
 }

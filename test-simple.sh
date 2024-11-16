@@ -1,3 +1,5 @@
+source "/home/dreamlike/.sdkman/bin/sdkman-init.sh"
+sdk use java jdk-ea
 echo "Maven Build"
 mvn clean package -am -pl leyden-simple
 echo "AOT Record"

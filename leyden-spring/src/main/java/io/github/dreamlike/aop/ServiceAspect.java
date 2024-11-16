@@ -1,15 +1,19 @@
 package io.github.dreamlike.aop;
 
-import jakarta.annotation.PostConstruct;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
 public class ServiceAspect {
+
+    private static final Logger log = LoggerFactory.getLogger(ServiceAspect.class);
+
     @Pointcut("execution (* run(..))")
     public void test() {
 
@@ -17,12 +21,12 @@ public class ServiceAspect {
 
     @Around("test()")
     public void aroundAdvice(ProceedingJoinPoint proceedingJoinPoint) {
-        System.out.println("before");
+       log.info("before");
         try {
             proceedingJoinPoint.proceed();
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        System.out.println("after");
+        log.info("after");
     }
 }
