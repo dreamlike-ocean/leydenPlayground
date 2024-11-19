@@ -9,7 +9,7 @@ export printLog=$1
 
 #java -Dspring.aot.enabled=true -jar leyden-spring/target/leyden-spring-0.0.1.jar
 # 切换到jdk24进行训练
-sdk use java jdk-ea
+sdk use java leyden
 
 echo "AOT Record"
 java -Xlog:cds -XX:+AOTClassLinking -XX:AOTMode=record -XX:AOTConfiguration=spring-aot.aotconf -Dspring.aot.enabled=true -jar leyden-spring-0.0.1/leyden-spring-0.0.1.jar 
